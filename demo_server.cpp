@@ -7,7 +7,7 @@ int main() {
   try {
     const short port = 1234;
     asio::io_context io_context;
-    tcp_server::server server(io_context, port);
+    tcp_rpc::server server(io_context, port);
     server.register_handler("f1", f1);
     io_context.run();
 

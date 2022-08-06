@@ -1,3 +1,3 @@
 all: 
-	g++ tcp_server.cpp -o tcp_server -lpthread
-	g++ tcp_client.cpp -o tcp_client -lpthread
+	g++ demo_server.cpp -o demo_server -lpthread
+	g++ demo_client.cpp -o demo_client -lpthread
