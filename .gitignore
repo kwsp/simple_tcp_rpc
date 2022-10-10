@@ -1,6 +1,9 @@
 demo_server
 demo_client
 
+compile_commands.json
+.cache/
+
 # Prerequisites
 *.d
 
