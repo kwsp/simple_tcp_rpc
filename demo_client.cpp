@@ -15,10 +15,10 @@ int main() {
   client.connect("127.0.0.1", 1234);
 
   send(client, "f1");
-  send(client, "f1");
+  send(client, "f1 arg1 arg2 arg3");
   send(client, "abcdlkasjdlakjsdlkajwlkajsdlkasjdlkajsdlkasjdlaksjdlaksjdlkajsdlaskjdaalksdjalksjdlaksjdlasjdlaksjdlaksjdlakjsdlaksjdlaksjdlaksjdlkasjdlkajsdlkajsdlkajsdlkajsdlkasjdlaksjdlaksjdlaskjdalskdjlaksjdlaksjdlaksjd");
   send(client, "f1");
-  send(client, "12345");
+  send(client, "12345 arg1");
   send(client, "67890");
   send(client, "f1");
 
