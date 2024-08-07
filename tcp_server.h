@@ -10,7 +10,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace tcp_server {
+namespace tcp_rpc {
 using asio::ip::tcp;
 
 typedef std::shared_ptr<tcp::socket> socket_ptr;
@@ -107,4 +107,4 @@ private:
   handlers handlers_;
 };
 
-} // namespace tcp_server
+} // namespace tcp_rpc
