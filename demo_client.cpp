@@ -1,9 +1,8 @@
-#include <string>
+#include "tcp_rpc/tcp_rpc.hpp"
 #include <asio.hpp>
-#include "tcp_client.h"
+#include <string>
 
-
-void send(tcp_rpc::client& client, const std::string& cmd) {
+void send(tcp_rpc::client &client, const std::string &cmd) {
   std::cout << "Sending cmd: " << cmd << std::endl;
   auto resp = client.send_recv(cmd);
   std::cout << "Received: " << resp << std::endl;
@@ -16,7 +15,12 @@ int main() {
 
   send(client, "f1");
   send(client, "f1 arg1 arg2 arg3");
-  send(client, "abcdlkasjdlakjsdlkajwlkajsdlkasjdlkajsdlkasjdlaksjdlaksjdlkajsdlaskjdaalksdjalksjdlaksjdlasjdlaksjdlaksjdlakjsdlaksjdlaksjdlaksjdlkasjdlkajsdlkajsdlkajsdlkajsdlkasjdlaksjdlaksjdlaskjdalskdjlaksjdlaksjdlaksjd");
+  send(client,
+       "abcdlkasjdlakjsdlkajwlkajsdlkasjdlkajsdlkasjdlaksjdlaksjdlkajsdlaskjdaa"
+       "lksdjalksjdlaksjdlasjdlaksjdlaksjdlakjsdlaksjdlaksjdlaksjdlkasjdlkajsdl"
+       "kajsdlkajsdlkajsdlkasjdlaksjdlaksjdlaskjdalskdjlaksjdlaksjdlaksjd");
+
+  client.connect("127.0.0.1", 1234);
   send(client, "f1");
   send(client, "12345 arg1");
   send(client, "67890");

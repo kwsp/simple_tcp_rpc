@@ -1,4 +1,5 @@
 #pragma once
+#include <tcp_rpc/common.hpp>
 
 #include <algorithm>
 #include <asio/ts/buffer.hpp>
@@ -8,20 +9,20 @@
 #include <functional>
 #include <iostream>
 #include <memory>
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace tcp_rpc {
 namespace detail {
 using asio::ip::tcp;
 
-typedef std::shared_ptr<tcp::socket> socket_ptr;
-typedef std::function<void(const std::vector<std::string>&)> handler_t;
+typedef std::function<void(const std::vector<std::string> &)> handler_t;
 typedef std::unordered_map<std::string, handler_t> handlers;
 
 // Split string s with delimiter ch
-inline std::vector<std::string> split(const std::string& s, const char ch = ' ') {
+inline std::vector<std::string> split(const std::string &s,
+                                      const char ch = ' ') {
   size_t i = s.find(ch);
   size_t start_i = 0;
   std::vector<std::string> res;
@@ -35,41 +36,26 @@ inline std::vector<std::string> split(const std::string& s, const char ch = ' ')
   return res;
 }
 
-inline std::string _clean_cmd(std::string cmd) {
-  // Erase everything after '\n'
-  cmd.erase(std::find(cmd.begin(), cmd.end(), '\n'), cmd.end());
-
-  // Erase characters that are not alphanumeric
-  cmd.erase(std::remove_if(cmd.begin(), cmd.end(),
-                           [](char c) { return !std::isalnum(c); }),
-            cmd.end());
-
-
-  // Lowercase the command, but not the arguments
-  std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
-  return cmd;
-}
-
 inline std::vector<std::string> _clean_resp(std::string resp) {
   // Erase everything after '\n'
   resp.erase(std::find(resp.begin(), resp.end(), '\n'), resp.end());
 
   // Erase characters that are not alphanumeric or space
-  resp.erase(std::remove_if(resp.begin(), resp.end(),
-                           [](char c) { return !(std::isalnum(c) || c == ' '); }),
-            resp.end());
+  resp.erase(
+      std::remove_if(resp.begin(), resp.end(),
+                     [](char c) { return !(std::isalnum(c) || c == ' '); }),
+      resp.end());
 
   // Lowercase the command, but not the arguments
   auto parts = split(resp);
-  auto& cmd = parts[0];
+  auto &cmd = parts[0];
   std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
   return parts;
-
 }
 
 class session : public std::enable_shared_from_this<session> {
 public:
-  session(tcp::socket socket, handlers &handlers_)
+  session(tcp::socket &&socket, handlers &handlers_)
       : socket_(std::move(socket)), handlers_(handlers_) {}
 
   void start() { do_read(); }
@@ -82,11 +68,11 @@ private:
         [this, self](std::error_code ec, std::size_t length) {
           if (!ec) {
             // clean up response
-            auto resp = _clean_resp(recv_buf_);
-            auto& cmd = resp[0];
+            const auto resp = _clean_resp(recv_buf_);
+            const auto &cmd = resp[0];
 
             // find and call handler for command
-            auto it = handlers_.find(cmd);
+            const auto it = handlers_.find(cmd);
             if (it != handlers_.end())
               it->second(resp);
             else

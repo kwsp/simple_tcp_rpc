@@ -1,9 +1,11 @@
-#include "tcp_server.h"
+#include "tcp_rpc/tcp_rpc.hpp"
+#include <string>
+#include <vector>
 
-void f1(const std::vector<std::string>& args) { 
-  std::cout << "f1 called with args ("; 
-  for (size_t i=1; i<args.size(); i++) {
-    std::cout << args[i] << ", "; 
+void f1(const std::vector<std::string> &args) {
+  std::cout << "f1 called with args (";
+  for (size_t i = 1; i < args.size(); i++) {
+    std::cout << args[i] << ", ";
   }
   std::cout << ")\n";
 }
