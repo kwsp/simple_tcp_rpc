@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 namespace tcp_rpc {
+namespace detail {
 using asio::ip::tcp;
 
 typedef std::shared_ptr<tcp::socket> socket_ptr;
@@ -18,9 +19,15 @@ typedef std::function<void(void)> callable;
 typedef std::unordered_map<std::string, callable> handlers;
 
 inline std::string _clean_cmd(std::string cmd) {
+  // Erase everything after '\n'
+  cmd.erase(std::find(cmd.begin(), cmd.end(), '\n'), cmd.end());
+
+  // Erase characters that are not alphanumeric
   cmd.erase(std::remove_if(cmd.begin(), cmd.end(),
                            [](char c) { return !std::isalnum(c); }),
             cmd.end());
+
+  // Lowercase
   std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower);
   return cmd;
 }
@@ -44,11 +51,11 @@ private:
 
             // find and call handler for command
             auto it = handlers_.find(cmd);
-            if (it != handlers_.end()) {
+            if (it != handlers_.end())
               it->second();
-            } else {
+            else
               std::cerr << "Handler not found for cmd (" << cmd << ")\n";
-            }
+
             std::strcpy(send_buf_, "OK\n");
             do_write(std::strlen(send_buf_));
           } else {
@@ -69,7 +76,7 @@ private:
   }
 
   tcp::socket socket_;
-  enum { max_length = 256 };
+  enum { max_length = 1024 };
   char recv_buf_[max_length];
   char send_buf_[max_length];
 
@@ -106,5 +113,8 @@ private:
 
   handlers handlers_;
 };
+} // namespace detail
+
+using detail::server;
 
 } // namespace tcp_rpc
