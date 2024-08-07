@@ -1,5 +1,5 @@
-tcp_server
-tcp_client
+demo_server
+demo_client
 
 # Prerequisites
 *.d
